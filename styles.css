@@ -1,0 +1,168 @@
+:root {
+	--primary-color: #2c3e50;
+	--secondary-color: #3498db;
+	--text-color: #333;
+	--light-color: #ecf0f1;
+	--card-hover: #2980b9;
+	--shadow: rgba(0, 0, 0, 0.1);
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+	background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+	color: var(--text-color);
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 20px;
+}
+
+.container {
+	width: 100%;
+	max-width: 800px;
+	background-color: white;
+	border-radius: 20px;
+	box-shadow: 0 10px 30px var(--shadow);
+	overflow: hidden;
+	padding: 30px;
+	animation: fadeIn 1s ease;
+}
+
+header {
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.profile {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.profile-img {
+	width: 480px;
+	height: 480px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 5px solid var(--light-color);
+	box-shadow: 0 5px 15px var(--shadow);
+	margin-bottom: 15px;
+	transition: transform 0.3s ease;
+}
+
+.profile-img:hover {
+	transform: scale(1.05);
+}
+
+h1 {
+	color: var(--primary-color);
+	margin-bottom: 5px;
+	font-size: 2.2rem;
+}
+
+.profile p {
+	color: #666;
+	font-size: 1.1rem;
+}
+
+.links {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.link-card {
+	position: relative;
+	display: flex;
+	align-items: center;
+	background-color: var(--light-color);
+	padding: 16px 20px;
+	border-radius: 12px;
+	text-decoration: none;
+	color: var(--primary-color);
+	font-weight: 600;
+	transition: all 0.3s ease;
+	box-shadow: 0 4px 6px var(--shadow);
+	overflow: hidden;
+	opacity: 0;
+	transform: translateY(20px);
+}
+
+.link-card:hover {
+	transform: translateY(-3px);
+	background-color: var(--secondary-color);
+	color: white;
+	box-shadow: 0 7px 15px var(--shadow);
+}
+
+.link-card i {
+	font-size: 1.5rem;
+	margin-right: 15px;
+	width: 25px;
+	text-align: center;
+}
+
+/* Ripple effect */
+.ripple {
+	position: absolute;
+	background: rgba(255, 255, 255, 0.3);
+	border-radius: 50%;
+	transform: scale(0);
+	animation: ripple 0.6s linear;
+	pointer-events: none;
+}
+
+@keyframes ripple {
+	to {
+		transform: scale(4);
+		opacity: 0;
+	}
+}
+
+footer {
+	margin-top: 30px;
+	text-align: center;
+	color: #666;
+	font-size: 0.9rem;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+body.loaded .container {
+	animation: none;
+}
+
+@media (max-width: 480px) {
+	.container {
+		padding: 20px;
+	}
+
+	.profile-img {
+		width: 400px;
+		height: 400px;
+	}
+
+	h1 {
+		font-size: 1.8rem;
+	}
+
+	.link-card {
+		padding: 14px 16px;
+	}
+}
