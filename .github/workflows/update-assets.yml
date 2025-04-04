@@ -47,9 +47,9 @@ jobs:
 
       - name: Update links in HTML
         run: |
-          sed -i 's|\(<a[^>]*class="meeting-btn meeting-btn-next-description"[^>]*href="\)[^"]*\("|\1${{ github.event.inputs.link1 }}\2|g' index.html
-          sed -i 's|\(<a[^>]*class="meeting-btn meeting-btn-next-but"[^>]*href="\)[^"]*\("|\1${{ github.event.inputs.link2 }}\2|g' index.html
-          sed -i 's|\(<a[^>]*class="meeting-btn meeting-btn-prev"[^>]*href="\)[^"]*\("|\1${{ github.event.inputs.link3 }}\2|g' index.html
+          sed -E -i 's|(<a[^>]*class="meeting-btn meeting-btn-next-description"[^>]*href=")[^"]*(")|\1'"${{ github.event.inputs.link1 }}"'\2|g' index.html
+          sed -E -i 's|(<a[^>]*class="meeting-btn meeting-btn-next-but"[^>]*href=")[^"]*(")|\1'"${{ github.event.inputs.link2 }}"'\2|g' index.html
+          sed -E -i 's|(<a[^>]*class="meeting-btn meeting-btn-prev"[^>]*href=")[^"]*(")|\1'"${{ github.event.inputs.link3 }}"'\2|g' index.html
 
       - name: Commit and push changes
         run: |
