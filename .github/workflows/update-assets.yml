@@ -19,6 +19,9 @@ on:
         description: "URL nowego obrazka (banner_previous.png)"
         required: true
 
+permissions:
+  contents: write # potrzebne do wykonania git push
+
 jobs:
   update-site:
     runs-on: ubuntu-latest
