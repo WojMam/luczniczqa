@@ -1,4 +1,4 @@
-name: Update Web Assets with Backup (Debug)
+name: Update Web Assets with Backup (with AWK)
 
 on:
   workflow_dispatch:
@@ -54,21 +54,29 @@ jobs:
         run: |
           curl -L "${{ github.event.inputs.image2_url }}" -o images/banner_previous.png
 
-      - name: Update links in HTML
+      - name: Update links in HTML (using awk)
         run: |
+          cp index.html index_tmp.html
+
           if [ "${{ github.event.inputs.link1 }}" != "" ]; then
-            sed -i '/class="[^"]*meeting-btn[^"]*meeting-btn-next-description[^"]*"/ s|href="[^"]*"|href="${{ github.event.inputs.link1 }}"|' index.html
-          fi
-          if [ "${{ github.event.inputs.link2 }}" != "" ]; then
-            sed -i '/class="[^"]*meeting-btn[^"]*meeting-btn-next-but[^"]*"/ s|href="[^"]*"|href="${{ github.event.inputs.link2 }}"|' index.html
-          fi
-          if [ "${{ github.event.inputs.link3 }}" != "" ]; then
-            sed -i '/class="[^"]*meeting-btn[^"]*meeting-btn-prev[^"]*"/ s|href="[^"]*"|href="${{ github.event.inputs.link3 }}"|' index.html
+            awk 'BEGIN{RS="</a>"; ORS="</a>\n"} /class="[^"]*meeting-btn[^"]*meeting-btn-next-description[^"]*"/ {sub(/href="[^"]*"/, "href=\"${{ github.event.inputs.link1 }}\"")} {print}' index_tmp.html > index.html
+            cp index.html index_tmp.html
           fi
 
-      - name: 🔍 Show index.html after sed
+          if [ "${{ github.event.inputs.link2 }}" != "" ]; then
+            awk 'BEGIN{RS="</a>"; ORS="</a>\n"} /class="[^"]*meeting-btn[^"]*meeting-btn-next-but[^"]*"/ {sub(/href="[^"]*"/, "href=\"${{ github.event.inputs.link2 }}\"")} {print}' index_tmp.html > index.html
+            cp index.html index_tmp.html
+          fi
+
+          if [ "${{ github.event.inputs.link3 }}" != "" ]; then
+            awk 'BEGIN{RS="</a>"; ORS="</a>\n"} /class="[^"]*meeting-btn[^"]*meeting-btn-prev[^"]*"/ {sub(/href="[^"]*"/, "href=\"${{ github.event.inputs.link3 }}\"")} {print}' index_tmp.html > index.html
+          fi
+
+          rm -f index_tmp.html
+
+      - name: 🔍 Show index.html after awk
         run: |
-          echo "=== index.html after sed ==="
+          echo "=== index.html after awk ==="
           cat index.html
 
       - name: 🔍 Show Git status & diff
