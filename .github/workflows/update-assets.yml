@@ -4,19 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       link1:
-        description: "Nowy URL dla przycisku next-description"
+        description: "Nowy URL dla przycisku Opis nastepnego spotkania"
         required: false
       link2:
-        description: "Nowy URL dla przycisku next-but"
+        description: "Nowy URL dla przycisku Kup bilet"
         required: false
       link3:
-        description: "Nowy URL dla przycisku prev"
+        description: "Nowy URL dla przycisku Opis poprzedniego spotkania"
         required: false
       image1_url:
-        description: "URL nowego obrazka (banner_next.png)"
+        description: "URL nowego obrazka (banner_next.png) - banner nastepnego spotkania"
         required: false
       image2_url:
-        description: "URL nowego obrazka (banner_previous.png)"
+        description: "URL nowego obrazka (banner_previous.png) - banner poprzedniego spotkania"
         required: false
 
 permissions:
@@ -73,18 +73,6 @@ jobs:
           fi
 
           rm -f index_tmp.html
-
-      - name: 🔍 Show index.html after awk
-        run: |
-          echo "=== index.html after awk ==="
-          cat index.html
-
-      - name: 🔍 Show Git status & diff
-        run: |
-          echo "=== git status ==="
-          git status
-          echo "=== git diff ==="
-          git diff index.html
 
       - name: Commit and push changes
         run: |
