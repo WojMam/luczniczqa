@@ -1,23 +1,23 @@
-name: Update Web Assets with Backup
+name: Update Web Assets with Backup (Flexible)
 
 on:
   workflow_dispatch:
     inputs:
       link1:
         description: "Nowy URL dla przycisku next-description"
-        required: true
+        required: false
       link2:
         description: "Nowy URL dla przycisku next-but"
-        required: true
+        required: false
       link3:
         description: "Nowy URL dla przycisku prev"
-        required: true
+        required: false
       image1_url:
         description: "URL nowego obrazka (banner_next.png)"
-        required: true
+        required: false
       image2_url:
         description: "URL nowego obrazka (banner_previous.png)"
-        required: true
+        required: false
 
 permissions:
   contents: write
@@ -30,34 +30,45 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Backup current images
+      - name: Backup current images (if needed)
+        if: ${{ github.event.inputs.image1_url != '' || github.event.inputs.image2_url != '' }}
         run: |
           TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')
           mkdir -p images/history
 
-          if [ -f images/banner_next.png ]; then
+          if [ -f images/banner_next.png ] && [ "${{ github.event.inputs.image1_url }}" != "" ]; then
             cp images/banner_next.png images/history/banner_next_$TIMESTAMP.png
           fi
 
-          if [ -f images/banner_previous.png ]; then
+          if [ -f images/banner_previous.png ] && [ "${{ github.event.inputs.image2_url }}" != "" ]; then
             cp images/banner_previous.png images/history/banner_previous_$TIMESTAMP.png
           fi
 
-      - name: Download new images
+      - name: Download new image1 (banner_next.png)
+        if: ${{ github.event.inputs.image1_url != '' }}
         run: |
           curl -L "${{ github.event.inputs.image1_url }}" -o images/banner_next.png
+
+      - name: Download new image2 (banner_previous.png)
+        if: ${{ github.event.inputs.image2_url != '' }}
+        run: |
           curl -L "${{ github.event.inputs.image2_url }}" -o images/banner_previous.png
 
       - name: Update links in HTML
         run: |
-          sed -E -i 's|(href=")[^"]*("([^>]*class="[^"]*meeting-btn[^"]*meeting-btn-next-description[^"]*"))|\1'"${{ github.event.inputs.link1 }}"'\2|g' index.html
-          sed -E -i 's|(href=")[^"]*("([^>]*class="[^"]*meeting-btn[^"]*meeting-btn-next-but[^"]*"))|\1'"${{ github.event.inputs.link2 }}"'\2|g' index.html
-          sed -E -i 's|(href=")[^"]*("([^>]*class="[^"]*meeting-btn[^"]*meeting-btn-prev[^"]*"))|\1'"${{ github.event.inputs.link3 }}"'\2|g' index.html
+          if [ "${{ github.event.inputs.link1 }}" != "" ]; then
+            sed -E -i 's|(href=")[^"]*("([^>]*class="[^"]*meeting-btn[^"]*meeting-btn-next-description[^"]*"))|\1'"${{ github.event.inputs.link1 }}"'\2|g' index.html
+          fi
+          if [ "${{ github.event.inputs.link2 }}" != "" ]; then
+            sed -E -i 's|(href=")[^"]*("([^>]*class="[^"]*meeting-btn[^"]*meeting-btn-next-but[^"]*"))|\1'"${{ github.event.inputs.link2 }}"'\2|g' index.html
+          fi
+          if [ "${{ github.event.inputs.link3 }}" != "" ]; then
+            sed -E -i 's|(href=")[^"]*("([^>]*class="[^"]*meeting-btn[^"]*meeting-btn-prev[^"]*"))|\1'"${{ github.event.inputs.link3 }}"'\2|g' index.html
+          fi
 
       - name: Commit and push changes
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add images/banner_next.png images/banner_previous.png images/history index.html
-          git commit -m "Backup + aktualizacja obrazków i linków"
-          git push
+          git add index.html images/banner_*.png images/history || true
+          git diff --cached --quiet || (git commit -m "Aktualizacja strony (wybrane zmiany)" && git push)
