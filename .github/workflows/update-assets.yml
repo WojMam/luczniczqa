@@ -1,4 +1,4 @@
-name: Update Web Assets with Backup (Flexible)
+name: Update Web Assets with Backup (Debug)
 
 on:
   workflow_dispatch:
@@ -65,6 +65,18 @@ jobs:
           if [ "${{ github.event.inputs.link3 }}" != "" ]; then
             sed -i '/class="[^"]*meeting-btn[^"]*meeting-btn-prev[^"]*"/ s|href="[^"]*"|href="${{ github.event.inputs.link3 }}"|' index.html
           fi
+
+      - name: 🔍 Show index.html after sed
+        run: |
+          echo "=== index.html after sed ==="
+          cat index.html
+
+      - name: 🔍 Show Git status & diff
+        run: |
+          echo "=== git status ==="
+          git status
+          echo "=== git diff ==="
+          git diff index.html
 
       - name: Commit and push changes
         run: |
