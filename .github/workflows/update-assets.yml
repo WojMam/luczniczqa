@@ -1,0 +1,60 @@
+name: Update Web Assets with Backup
+
+on:
+  workflow_dispatch:
+    inputs:
+      link1:
+        description: "Nowy URL dla przycisku next-description"
+        required: true
+      link2:
+        description: "Nowy URL dla przycisku next-but"
+        required: true
+      link3:
+        description: "Nowy URL dla przycisku prev"
+        required: true
+      image1_url:
+        description: "URL nowego obrazka (banner_next.png)"
+        required: true
+      image2_url:
+        description: "URL nowego obrazka (banner_previous.png)"
+        required: true
+
+jobs:
+  update-site:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Backup current images
+        run: |
+          TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')
+          mkdir -p images/history
+
+          if [ -f images/banner_next.png ]; then
+            cp images/banner_next.png images/history/banner_next_$TIMESTAMP.png
+          fi
+
+          if [ -f images/banner_previous.png ]; then
+            cp images/banner_previous.png images/history/banner_previous_$TIMESTAMP.png
+          fi
+
+      - name: Download new images
+        run: |
+          curl -L "${{ github.event.inputs.image1_url }}" -o images/banner_next.png
+          curl -L "${{ github.event.inputs.image2_url }}" -o images/banner_previous.png
+
+      - name: Update links in HTML
+        run: |
+          sed -i 's|\(<a[^>]*class="meeting-btn-next-description"[^>]*href="\)[^"]*\("|\1${{ github.event.inputs.link1 }}\2|g' index.html
+          sed -i 's|\(<a[^>]*class="meeting-btn-next-but"[^>]*href="\)[^"]*\("|\1${{ github.event.inputs.link2 }}\2|g' index.html
+          sed -i 's|\(<a[^>]*class="meeting-btn-prev"[^>]*href="\)[^"]*\("|\1${{ github.event.inputs.link3 }}\2|g' index.html
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add images/banner_next.png images/banner_previous.png images/history index.html
+          git commit -m "Backup + aktualizacja obrazków i linków"
+          git push
