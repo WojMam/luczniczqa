@@ -1,8 +1,8 @@
 // Set current year in the footer
 document.getElementById("year").textContent = new Date().getFullYear();
 
-// Add click animation to links
-const links = document.querySelectorAll(".link-card");
+// Add click animation to links and buttons
+const links = document.querySelectorAll(".link-card, .meeting-btn");
 
 links.forEach(link => {
 	link.addEventListener("click", function (e) {
@@ -29,5 +29,18 @@ document.addEventListener("DOMContentLoaded", function () {
 			link.style.opacity = 1;
 			link.style.transform = "translateY(0)";
 		}, 100 * index);
+	});
+
+	// Animate meeting sections
+	const meetingSections = document.querySelectorAll(".meeting-section");
+	meetingSections.forEach((section, index) => {
+		section.style.opacity = 0;
+		section.style.transform = "translateY(20px)";
+
+		setTimeout(() => {
+			section.style.transition = "all 0.5s ease";
+			section.style.opacity = 1;
+			section.style.transform = "translateY(0)";
+		}, 500 + 300 * index);
 	});
 });
