@@ -57,13 +57,13 @@ jobs:
       - name: Update links in HTML
         run: |
           if [ "${{ github.event.inputs.link1 }}" != "" ]; then
-            sed -E -i 's|(href=")[^"]*("([^>]*class="[^"]*meeting-btn[^"]*meeting-btn-next-description[^"]*"))|\1'"${{ github.event.inputs.link1 }}"'\2|g' index.html
+            sed -i '/class="[^"]*meeting-btn[^"]*meeting-btn-next-description[^"]*"/ s|href="[^"]*"|href="${{ github.event.inputs.link1 }}"|' index.html
           fi
           if [ "${{ github.event.inputs.link2 }}" != "" ]; then
-            sed -E -i 's|(href=")[^"]*("([^>]*class="[^"]*meeting-btn[^"]*meeting-btn-next-but[^"]*"))|\1'"${{ github.event.inputs.link2 }}"'\2|g' index.html
+            sed -i '/class="[^"]*meeting-btn[^"]*meeting-btn-next-but[^"]*"/ s|href="[^"]*"|href="${{ github.event.inputs.link2 }}"|' index.html
           fi
           if [ "${{ github.event.inputs.link3 }}" != "" ]; then
-            sed -E -i 's|(href=")[^"]*("([^>]*class="[^"]*meeting-btn[^"]*meeting-btn-prev[^"]*"))|\1'"${{ github.event.inputs.link3 }}"'\2|g' index.html
+            sed -i '/class="[^"]*meeting-btn[^"]*meeting-btn-prev[^"]*"/ s|href="[^"]*"|href="${{ github.event.inputs.link3 }}"|' index.html
           fi
 
       - name: Commit and push changes
