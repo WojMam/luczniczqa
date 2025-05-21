@@ -33,6 +33,8 @@ function initSlider() {
 
 	// Archive images (descending order)
 	slideImages = [
+		"images/archive/51.png",
+		"images/archive/50.png",
 		"images/archive/49.png",
 		"images/archive/48.png",
 		"images/archive/47.png",
