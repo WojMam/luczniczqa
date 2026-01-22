@@ -15,8 +15,15 @@ on:
       archive_current_banner:
         description: "Zarchiwizuj obecne zdjęcie wydarzenia jako kolejny numer"
         required: false
-        default: "false"
+        default: false
         type: boolean
+      choice_daria:
+        type: choice
+        description: Make a choice
+        options:
+        - foo
+        - bar
+        - baz
 
 permissions:
   contents: write
