@@ -56,10 +56,22 @@ jobs:
           cp "images/banner_next.${ext}" "images/archive/${next}.${ext}"
           echo "Skopiowano jako: images/archive/${next}.${ext}"
 
-      - name: Download new image (banner_next.jpg)
+      - name: Download new image (detect ext from URL)
         if: ${{ github.event.inputs.image1_url != '' }}
         run: |
-          curl -L "${{ github.event.inputs.image1_url }}" -o images/banner_next.jpg
+          url="${{ github.event.inputs.image1_url }}"
+          # extract extension (lowercase)
+          ext="${url##*.}"
+          ext="$(echo "$ext" | tr '[:upper:]' '[:lower:]')"
+          if [ "$ext" = "jpeg" ]; then
+            ext=jpg
+          fi
+          case "$ext" in
+            jpg|png) ;;
+            *) ext=png ;;
+          esac
+          out="images/banner_next.$ext"
+          curl -L "$url" -o "$out"
 
       - name: Update links in HTML (using awk)
         run: |
