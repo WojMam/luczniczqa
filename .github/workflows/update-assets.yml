@@ -15,7 +15,7 @@ on:
       archive_current_banner:
         description: "Zarchiwizuj obecne zdjęcie wydarzenia jako kolejny numer"
         required: false
-        default: "false"
+        default: false
         type: boolean
 
 permissions:
@@ -33,19 +33,26 @@ jobs:
         if: ${{ github.event.inputs.archive_current_banner == 'true' }}
         run: |
           mkdir -p images/archive
-          num=$(ls images/archive | grep -E '^[0-9]+\.png$' | sed 's/\.png//' | sort -n | tail -n 1)
+          num=$(ls images/archive | grep -E '^[0-9]+\\.(png|jpg)$' | sed 's/\\..*$//' | sort -n | tail -n 1)
           if [ -z "$num" ]; then
             next=1
           else
             next=$((num + 1))
           fi
-          cp images/banner_next.png images/archive/${next}.png
-          echo "Skopiowano jako: images/archive/${next}.png"
+          if [ -f images/banner_next.jpg ]; then
+            ext=jpg
+          elif [ -f images/banner_next.png ]; then
+            ext=png
+          else
+            ext=jpg
+          fi
+          cp "images/banner_next.${ext}" "images/archive/${next}.${ext}"
+          echo "Skopiowano jako: images/archive/${next}.${ext}"
 
-      - name: Download new image (banner_next.png)
+      - name: Download new image (banner_next.jpg)
         if: ${{ github.event.inputs.image1_url != '' }}
         run: |
-          curl -L "${{ github.event.inputs.image1_url }}" -o images/banner_next.png
+          curl -L "${{ github.event.inputs.image1_url }}" -o images/banner_next.jpg
 
       - name: Update links in HTML (using awk)
         run: |
@@ -66,5 +73,5 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add index.html images/banner_next.png images/archive || true
+          git add index.html images/banner_next.jpg images/banner_next.png images/archive || true
           git diff --cached --quiet || (git commit -m "Aktualizacja strony (linki, obrazek i/lub archiwizacja)" && git push)
