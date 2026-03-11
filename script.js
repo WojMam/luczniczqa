@@ -31,31 +31,32 @@ function initSlider() {
 	prevBtn = document.getElementById("prevBtn");
 	nextBtn = document.getElementById("nextBtn");
 
-	// Archive images (descending order)
-	slideImages = [
-		"images/archive/53.png",
-		"images/archive/52.png",
-		"images/archive/51.png",
-		"images/archive/50.png",
-		"images/archive/49.png",
-		"images/archive/48.png",
-		"images/archive/47.png",
-		"images/archive/46.png",
-		"images/archive/45.png",
-	];
+	// Archive images (descending order) - try .png first, fallback to .jpg
+	const archiveNumbers = [55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45];
 
 	// Create slides
-	slideImages.forEach((src, index) => {
+	archiveNumbers.forEach((num, index) => {
 		const slide = document.createElement("div");
 		slide.className = "slide";
 
 		const img = document.createElement("img");
-		img.src = src;
-		img.alt = `Spotkanie #${49 - index}`;
+		// try png first, fallback to jpg on error
+		img.src = `images/archive/${num}.png`;
+		img.alt = `Spotkanie #${num}`;
+		// reserve slot for this image
+		slideImages.push(null);
 		img.onload = function () {
-			// Ensure the slider updates once images are loaded
+			slideImages[index] = this.src;
 			if (index === 0) {
 				updateSlider();
+			}
+		};
+		img.onerror = function () {
+			// try jpg if png missing
+			if (!this.src.endsWith(".jpg")) {
+				this.src = `images/archive/${num}.jpg`;
+			} else {
+				slideImages[index] = null;
 			}
 		};
 
@@ -70,6 +71,7 @@ function initSlider() {
 			resetAutoSlide();
 		});
 		dotsContainer.appendChild(dot);
+		// keep track placeholder (actual src set on load/error)
 	});
 
 	// Set up event listeners
@@ -149,11 +151,14 @@ document.addEventListener("DOMContentLoaded", function () {
 		section.style.opacity = 0;
 		section.style.transform = "translateY(20px)";
 
-		setTimeout(() => {
-			section.style.transition = "all 0.5s ease";
-			section.style.opacity = 1;
-			section.style.transform = "translateY(0)";
-		}, 500 + 300 * index);
+		setTimeout(
+			() => {
+				section.style.transition = "all 0.5s ease";
+				section.style.opacity = 1;
+				section.style.transform = "translateY(0)";
+			},
+			500 + 300 * index,
+		);
 	});
 
 	// Initialize slider
