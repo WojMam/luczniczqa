@@ -2,7 +2,7 @@
 document.getElementById("year").textContent = new Date().getFullYear();
 
 // Add click animation to links and buttons
-const links = document.querySelectorAll(".link-card, .meeting-btn");
+const links = document.querySelectorAll(".link-card, .meeting-btn, .calendar-split-part");
 
 links.forEach(link => {
 	link.addEventListener("click", function () {
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	document.body.classList.add("loaded");
 
 	// Stagger the appearance of links
-	const links = document.querySelectorAll(".link-card");
+	const links = document.querySelectorAll(".links > *");
 	links.forEach((link, index) => {
 		setTimeout(() => {
 			link.style.opacity = 1;
