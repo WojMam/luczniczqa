@@ -418,6 +418,8 @@ body.loaded .container {
 	display: flex;
 	transition: transform 0.5s ease;
 	height: auto;
+	aspect-ratio: 4 / 3;
+	background-color: #1a252f;
 }
 
 .slide {
@@ -428,8 +430,9 @@ body.loaded .container {
 
 .slide img {
 	width: 100%;
-	height: auto;
+	height: 100%;
 	object-fit: cover;
+	object-position: center;
 	display: block;
 }
 
