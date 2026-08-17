@@ -143,12 +143,64 @@ h2 {
 	text-align: center;
 }
 
-.link-card-calendar {
-	background-color: var(--primary-color);
+.calendar-split {
+	display: flex;
+	position: relative;
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: 0 4px 6px var(--shadow);
+	opacity: 0;
+	transform: translateY(20px);
+	transition: all 0.3s ease;
+}
+
+.calendar-split:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 7px 15px var(--shadow);
+}
+
+.calendar-split-part {
+	position: relative;
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	padding: 16px 18px;
+	text-decoration: none;
+	font-weight: 600;
+	overflow: hidden;
+	white-space: nowrap;
+	transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.calendar-split-part i {
+	font-size: 1.5rem;
+	width: 22px;
+	text-align: center;
+}
+
+.calendar-split-view {
+	background-color: var(--light-color);
+	color: var(--primary-color);
+	clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 100%, 0 100%);
+	z-index: 1;
+}
+
+.calendar-split-view:hover {
+	background-color: var(--secondary-color);
 	color: white;
 }
 
-.link-card-calendar:hover {
+.calendar-split-join {
+	background-color: var(--primary-color);
+	color: white;
+	margin-left: -28px;
+	padding-left: 36px;
+	clip-path: polygon(28px 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.calendar-split-join:hover {
 	background-color: #1a252f;
 	color: white;
 }
@@ -324,6 +376,21 @@ body.loaded .container {
 	.link-card,
 	.meeting-btn {
 		padding: 14px 16px;
+	}
+
+	.calendar-split-part {
+		padding: 14px 10px;
+		font-size: 0.95rem;
+		gap: 6px;
+	}
+
+	.calendar-split-part i {
+		font-size: 1.2rem;
+		width: 18px;
+	}
+
+	.calendar-split-join {
+		padding-left: 28px;
 	}
 
 	.slider-btn {
