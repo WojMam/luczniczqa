@@ -18,9 +18,61 @@ links.forEach(link => {
 	});
 });
 
-// Slider functionality
-const SLIDER_IMAGE_COUNT = 5;
-const SLIDER_MAX_ARCHIVE_NUM = 100;
+// Slider: photos from past meetups (not event banner thumbnails)
+const GALLERY_IMAGES = [
+	{
+		src: "images/gallery/01-prelegent-scaling-test-automation.jpg",
+		alt: "Prelekcja Scaling Test Automation",
+	},
+	{
+		src: "images/gallery/02-meetup-56-powitanie.jpg",
+		alt: "Powitanie na spotkaniu ŁuczniczQA #56",
+	},
+	{
+		src: "images/gallery/03-prelekcja-qa-partner-biznesu.jpg",
+		alt: "Prelekcja QA jako partner biznesu",
+	},
+	{
+		src: "images/gallery/04-hanna-markowicz-qa-partner-biznesu.jpg",
+		alt: "Hanna Markowicz — QA jako partner biznesu",
+	},
+	{
+		src: "images/gallery/05-publicznosc-sala-kongresowa.jpg",
+		alt: "Publiczność meetupu w sali Kongresowa",
+	},
+	{
+		src: "images/gallery/06-co-slychac-w-testerskim-swiecie.jpg",
+		alt: "Prelekcja Co słychać w testerskim świecie",
+	},
+	{
+		src: "images/gallery/07-meetup-sii-x-luczniczqa.jpg",
+		alt: "Meetup Sii x ŁuczniczQA",
+	},
+	{
+		src: "images/gallery/08-publicznosc-spotkanie-kongresowa.jpg",
+		alt: "Uczestnicy spotkania w sali Kongresowa",
+	},
+	{
+		src: "images/gallery/09-prelekcja-kompetencje-testerskie.jpg",
+		alt: "Prelekcja o kompetencjach testerskich",
+	},
+	{
+		src: "images/gallery/10-publicznosc-drewniana-sala.jpg",
+		alt: "Publiczność spotkania w sali z drewnianymi belkami",
+	},
+	{
+		src: "images/gallery/11-prelegent-google-cloud-notebooks.jpg",
+		alt: "Prelekcja o notebookach i Google Cloud",
+	},
+	{
+		src: "images/gallery/12-prelekcja-nie-tylko-ozn.jpg",
+		alt: "Prelekcja Nie tylko OzN",
+	},
+	{
+		src: "images/gallery/13-prelekcja-stefania-winkel.jpg",
+		alt: "Prelekcja Stefanii Winkel",
+	},
+];
 
 let currentSlide = 0;
 let slideCount = 0;
@@ -36,29 +88,26 @@ function tryLoadImage(src) {
 	});
 }
 
-async function discoverArchiveImages(maxImages = SLIDER_IMAGE_COUNT) {
+async function loadGalleryImages() {
 	const found = [];
 
-	for (let num = SLIDER_MAX_ARCHIVE_NUM; num >= 1 && found.length < maxImages; num--) {
-		const pngSrc = `images/archive/${num}.png`;
-		const jpgSrc = `images/archive/${num}.jpg`;
-		const src = (await tryLoadImage(pngSrc)) || (await tryLoadImage(jpgSrc));
-
+	for (const image of GALLERY_IMAGES) {
+		const src = await tryLoadImage(image.src);
 		if (src) {
-			found.push({ num, src });
+			found.push({ ...image, src });
 		}
 	}
 
 	return found;
 }
 
-function createSlide({ num, src }) {
+function createSlide({ src, alt }) {
 	const slide = document.createElement("div");
 	slide.className = "slide";
 
 	const img = document.createElement("img");
 	img.src = src;
-	img.alt = `Spotkanie #${num}`;
+	img.alt = alt;
 	img.loading = "lazy";
 
 	slide.appendChild(img);
@@ -75,23 +124,22 @@ function createDot(index) {
 	return dot;
 }
 
-// Initialize slider with the latest archive images
 async function initSlider() {
 	slider = document.querySelector(".slider");
 	const dotsContainer = document.querySelector(".slider-dots");
 	prevBtn = document.getElementById("prevBtn");
 	nextBtn = document.getElementById("nextBtn");
 
-	const archiveImages = await discoverArchiveImages();
+	const galleryImages = await loadGalleryImages();
 
-	if (archiveImages.length === 0) {
+	if (galleryImages.length === 0) {
 		document.querySelector(".previous-meeting")?.remove();
 		return;
 	}
 
-	slideCount = archiveImages.length;
+	slideCount = galleryImages.length;
 
-	archiveImages.forEach((image, index) => {
+	galleryImages.forEach((image, index) => {
 		slider.appendChild(createSlide(image));
 		dotsContainer.appendChild(createDot(index));
 	});
