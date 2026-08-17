@@ -5,7 +5,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
 const links = document.querySelectorAll(".link-card, .meeting-btn");
 
 links.forEach(link => {
-	link.addEventListener("click", function (e) {
+	link.addEventListener("click", function () {
 		// Add a ripple effect
 		const ripple = document.createElement("span");
 		ripple.classList.add("ripple");
@@ -19,62 +19,83 @@ links.forEach(link => {
 });
 
 // Slider functionality
+const SLIDER_IMAGE_COUNT = 5;
+const SLIDER_MAX_ARCHIVE_NUM = 100;
+
 let currentSlide = 0;
-let slideImages = [];
+let slideCount = 0;
 let slider, dots, prevBtn, nextBtn;
 let autoSlideInterval;
 
-// Initialize slider with archive images
-function initSlider() {
+function tryLoadImage(src) {
+	return new Promise(resolve => {
+		const img = new Image();
+		img.onload = () => resolve(src);
+		img.onerror = () => resolve(null);
+		img.src = src;
+	});
+}
+
+async function discoverArchiveImages(maxImages = SLIDER_IMAGE_COUNT) {
+	const found = [];
+
+	for (let num = SLIDER_MAX_ARCHIVE_NUM; num >= 1 && found.length < maxImages; num--) {
+		const pngSrc = `images/archive/${num}.png`;
+		const jpgSrc = `images/archive/${num}.jpg`;
+		const src = (await tryLoadImage(pngSrc)) || (await tryLoadImage(jpgSrc));
+
+		if (src) {
+			found.push({ num, src });
+		}
+	}
+
+	return found;
+}
+
+function createSlide({ num, src }) {
+	const slide = document.createElement("div");
+	slide.className = "slide";
+
+	const img = document.createElement("img");
+	img.src = src;
+	img.alt = `Spotkanie #${num}`;
+	img.loading = "lazy";
+
+	slide.appendChild(img);
+	return slide;
+}
+
+function createDot(index) {
+	const dot = document.createElement("div");
+	dot.className = index === 0 ? "dot active" : "dot";
+	dot.addEventListener("click", () => {
+		goToSlide(index);
+		resetAutoSlide();
+	});
+	return dot;
+}
+
+// Initialize slider with the latest archive images
+async function initSlider() {
 	slider = document.querySelector(".slider");
 	const dotsContainer = document.querySelector(".slider-dots");
 	prevBtn = document.getElementById("prevBtn");
 	nextBtn = document.getElementById("nextBtn");
 
-	// Archive images (descending order) - try .png first, fallback to .jpg
-	const archiveNumbers = [55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45];
+	const archiveImages = await discoverArchiveImages();
 
-	// Create slides
-	archiveNumbers.forEach((num, index) => {
-		const slide = document.createElement("div");
-		slide.className = "slide";
+	if (archiveImages.length === 0) {
+		document.querySelector(".previous-meeting")?.remove();
+		return;
+	}
 
-		const img = document.createElement("img");
-		// try png first, fallback to jpg on error
-		img.src = `images/archive/${num}.png`;
-		img.alt = `Spotkanie #${num}`;
-		// reserve slot for this image
-		slideImages.push(null);
-		img.onload = function () {
-			slideImages[index] = this.src;
-			if (index === 0) {
-				updateSlider();
-			}
-		};
-		img.onerror = function () {
-			// try jpg if png missing
-			if (!this.src.endsWith(".jpg")) {
-				this.src = `images/archive/${num}.jpg`;
-			} else {
-				slideImages[index] = null;
-			}
-		};
+	slideCount = archiveImages.length;
 
-		slide.appendChild(img);
-		slider.appendChild(slide);
-
-		// Create dots
-		const dot = document.createElement("div");
-		dot.className = index === 0 ? "dot active" : "dot";
-		dot.addEventListener("click", () => {
-			goToSlide(index);
-			resetAutoSlide();
-		});
-		dotsContainer.appendChild(dot);
-		// keep track placeholder (actual src set on load/error)
+	archiveImages.forEach((image, index) => {
+		slider.appendChild(createSlide(image));
+		dotsContainer.appendChild(createDot(index));
 	});
 
-	// Set up event listeners
 	prevBtn.addEventListener("click", () => {
 		prevSlide();
 		resetAutoSlide();
@@ -85,10 +106,8 @@ function initSlider() {
 		resetAutoSlide();
 	});
 
-	// Set dots reference after they're created
 	dots = document.querySelectorAll(".dot");
-
-	// Start auto slide
+	updateSlider();
 	startAutoSlide();
 }
 
@@ -98,33 +117,43 @@ function goToSlide(index) {
 }
 
 function nextSlide() {
-	currentSlide = (currentSlide + 1) % slideImages.length;
+	if (slideCount === 0) {
+		return;
+	}
+
+	currentSlide = (currentSlide + 1) % slideCount;
 	updateSlider();
 }
 
 function prevSlide() {
-	currentSlide = (currentSlide - 1 + slideImages.length) % slideImages.length;
+	if (slideCount === 0) {
+		return;
+	}
+
+	currentSlide = (currentSlide - 1 + slideCount) % slideCount;
 	updateSlider();
 }
 
 function updateSlider() {
-	// Update slider position
+	if (!slider || slideCount === 0) {
+		return;
+	}
+
 	slider.style.transform = `translateX(-${currentSlide * 100}%)`;
 
-	// Update dots
 	dots.forEach((dot, index) => {
-		if (index === currentSlide) {
-			dot.classList.add("active");
-		} else {
-			dot.classList.remove("active");
-		}
+		dot.classList.toggle("active", index === currentSlide);
 	});
 }
 
 function startAutoSlide() {
+	if (slideCount <= 1) {
+		return;
+	}
+
 	autoSlideInterval = setInterval(() => {
 		nextSlide();
-	}, 5000); // Change slide every 5 seconds
+	}, 5000);
 }
 
 function resetAutoSlide() {
@@ -161,6 +190,5 @@ document.addEventListener("DOMContentLoaded", function () {
 		);
 	});
 
-	// Initialize slider
 	initSlider();
 });
