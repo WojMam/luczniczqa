@@ -21,19 +21,18 @@ links.forEach(link => {
 // Slider: photos from past meetups (folder `photos/`, not banner thumbnails)
 const GALLERY_DIR = "photos";
 const GALLERY_IMAGES = [
-	{ file: "01-prelegent-scaling-test-automation.jpg", alt: "Prelekcja Scaling Test Automation" },
-	{ file: "02-meetup-56-powitanie.jpg", alt: "Powitanie na spotkaniu ŁuczniczQA #56" },
-	{ file: "03-prelekcja-qa-partner-biznesu.jpg", alt: "Prelekcja QA jako partner biznesu" },
-	{ file: "04-hanna-markowicz-qa-partner-biznesu.jpg", alt: "Hanna Markowicz — QA jako partner biznesu" },
-	{ file: "05-publicznosc-sala-kongresowa.jpg", alt: "Publiczność meetupu w sali Kongresowa" },
-	{ file: "06-co-slychac-w-testerskim-swiecie.jpg", alt: "Prelekcja Co słychać w testerskim świecie" },
-	{ file: "07-meetup-sii-x-luczniczqa.jpg", alt: "Meetup Sii x ŁuczniczQA" },
-	{ file: "08-publicznosc-spotkanie-kongresowa.jpg", alt: "Uczestnicy spotkania w sali Kongresowa" },
-	{ file: "09-prelekcja-kompetencje-testerskie.jpg", alt: "Prelekcja o kompetencjach testerskich" },
-	{ file: "10-publicznosc-drewniana-sala.jpg", alt: "Publiczność spotkania w sali z drewnianymi belkami" },
-	{ file: "11-prelegent-google-cloud-notebooks.jpg", alt: "Prelekcja o notebookach i Google Cloud" },
-	{ file: "12-prelekcja-nie-tylko-ozn.jpg", alt: "Prelekcja Nie tylko OzN" },
-	{ file: "13-prelekcja-stefania-winkel.jpg", alt: "Prelekcja Stefanii Winkel" },
+	{ file: "1.png", alt: "Powitanie na spotkaniu ŁuczniczQA #56" },
+	{ file: "2.png", alt: "Prelekcja QA jako partner biznesu" },
+	{ file: "3.png", alt: "Hanna Markowicz — QA jako partner biznesu" },
+	{ file: "4.png", alt: "Publiczność meetupu w sali Kongresowa" },
+	{ file: "5.png", alt: "Prelekcja Co słychać w testerskim świecie" },
+	{ file: "6.png", alt: "Meetup Sii x ŁuczniczQA" },
+	{ file: "7.png", alt: "Uczestnicy spotkania w sali Kongresowa" },
+	{ file: "8.png", alt: "Prelekcja o kompetencjach testerskich" },
+	{ file: "9.png", alt: "Publiczność spotkania w sali z drewnianymi belkami" },
+	{ file: "10.png", alt: "Prelekcja o notebookach i Google Cloud" },
+	{ file: "11.png", alt: "Prelekcja Nie tylko OzN" },
+	{ file: "12.png", alt: "Prelekcja Stefanii Winkel" },
 ];
 
 let currentSlide = 0;
