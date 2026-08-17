@@ -162,7 +162,6 @@ h2 {
 
 .calendar-split-part {
 	position: relative;
-	flex: 1;
 	display: flex;
 	align-items: center;
 	padding: 16px 20px;
@@ -181,8 +180,12 @@ h2 {
 }
 
 .calendar-split-view {
+	width: calc(50% + 16px);
+	flex: none;
 	background-color: var(--light-color);
 	color: var(--primary-color);
+	clip-path: polygon(0 0, calc(100% - 32px) 0, 100% 100%, 0 100%);
+	z-index: 1;
 }
 
 .calendar-split-view:hover {
@@ -190,34 +193,14 @@ h2 {
 	color: white;
 }
 
-.calendar-split-slash {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 28px;
-	flex-shrink: 0;
-	font-size: 1.5rem;
-	font-weight: 700;
-	line-height: 1;
-	background: linear-gradient(to right, var(--light-color) 50%, var(--primary-color) 50%);
-	color: #7f8c8d;
-	pointer-events: none;
-	z-index: 1;
-}
-
-.calendar-split:has(.calendar-split-view:hover) .calendar-split-slash {
-	background: linear-gradient(to right, var(--secondary-color) 50%, var(--primary-color) 50%);
-	color: white;
-}
-
-.calendar-split:has(.calendar-split-join:hover) .calendar-split-slash {
-	background: linear-gradient(to right, var(--light-color) 50%, #1a252f 50%);
-	color: white;
-}
-
 .calendar-split-join {
+	width: calc(50% + 16px);
+	flex: none;
+	margin-left: -32px;
+	padding-left: 40px;
 	background-color: var(--primary-color);
 	color: white;
+	clip-path: polygon(32px 0, 100% 0, 100% 100%, 0 100%);
 }
 
 .calendar-split-join:hover {
@@ -250,10 +233,6 @@ h2 {
 	width: 100%;
 	height: auto;
 	display: block;
-}
-
-.grayscale img {
-	filter: grayscale(100%);
 }
 
 .meeting-buttons {
@@ -409,11 +388,6 @@ body.loaded .container {
 		margin-right: 8px;
 	}
 
-	.calendar-split-slash {
-		width: 20px;
-		font-size: 1.2rem;
-	}
-
 	.slider-btn {
 		width: 30px;
 		height: 30px;
@@ -457,12 +431,6 @@ body.loaded .container {
 	height: auto;
 	object-fit: cover;
 	display: block;
-	filter: grayscale(100%);
-	transition: filter 0.5s ease;
-}
-
-.slider-container:hover .slide img {
-	filter: grayscale(0%);
 }
 
 .slider-controls {
